@@ -1,7 +1,7 @@
 ## Portrait Diffusion: Training-free Face Stylization with Chain-of-Painting
 [Jin Liu](https://github.com/liujin112), [Huaibo Huang](https://scholar.google.com/citations?user=XMvLciUAAAAJ&hl=en&oi=sra), Chao Jin, [Ran He](https://scholar.google.com/citations?user=ayrg9AUAAAAJ&hl=en&oi=sra).
 
-Pytorch implementation of [Portrait Diffusion: Training-free Face Stylization with Chain-of-Painting](https://arxiv.org/abs/)
+Pytorch implementation of [Portrait Diffusion: Training-free Face Stylization with Chain-of-Painting](https://arxiv.org/abs/2312.02212)
 
 
 
@@ -56,7 +56,6 @@ python main.py --step 0 \
               --style 'images/style/1.jpf' \
               --style_mask '' \
               --output './results' \
-
 ```
 
 
@@ -68,11 +67,12 @@ Gradio demo provides more controllable settings. We intergrate [SegmentAnything 
 python app.py
 ```
 
-For personalized model usage, you should place the full model to `models/Stable-diffusion` or LoRA model to `models/Lora`, and select them in the gradio demo.
+For personalized model usage, you should place the full model to `models/Stable-diffusion` or LoRA model to `models/Lora`, and select them in the gradio demo. We provide `latent-consistency/lcm-lora-sdv1-5` as an additional option, which allows you to generate an image using very few steps (less than 10).
+
 
 
 ## Acknowledgements
-- Our implementation is mainly based on the structure of [MasaCtrl](https://github.com/TencentARC/MasaCtrl).
+- We thank [MasaCtrl](https://github.com/TencentARC/MasaCtrl) for their outstanding work!
 
 
 ## Citation
