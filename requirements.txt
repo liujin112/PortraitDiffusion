@@ -1,0 +1,10 @@
+diffusers
+transformers
+opencv-python
+einops
+omegaconf
+pytorch_lightning
+torchvision
+pillow
+git+https://github.com/facebookresearch/segment-anything.git
+gradio==3.47
