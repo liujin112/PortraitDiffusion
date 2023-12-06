@@ -68,7 +68,7 @@ Gradio demo provides more controllable settings. We intergrate [SegmentAnything 
 python app.py
 ```
 
-For personalized model usage, you should place the full model to `models/Stable-diffusion` or LoRA model to `models/Lora`, and select them in the gradio demo. We provide `latent-consistency/lcm-lora-sdv1-5` as an additional option, which allows you to generate an image using very few steps (less than 10).
+For personalized model usage, you should place the full model to `models/Stable-diffusion` or LoRA model to `models/Lora`, and select them in the gradio demo. We provide `latent-consistency/lcm-lora-sdv1-5` as an additional option, which allows you to generate an image using very few steps (less than 10, but we recommend no less than 4 steps).
 
 
 
