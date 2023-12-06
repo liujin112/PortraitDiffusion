@@ -385,7 +385,7 @@ def ui():
     with gr.Blocks(css=css) as demo:
         gr.Markdown(
             """
-            # [Portrait Diffusion: Training-free Face Stylization with Chain-of-Painting](https://arxiv.org/abs/00000)
+            # [Portrait Diffusion: Training-free Face Stylization with Chain-of-Painting](https://arxiv.org/abs/2312.02212)
             Jin Liu, Huaibo Huang, Chao Jin, Ran He* (*Corresponding Author)<br>
             [Arxiv Report](https://arxiv.org/abs/2312.02212) | [Github](https://github.com/liujin112/PortraitDiffusion)
             """
