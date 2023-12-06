@@ -5,7 +5,7 @@ Pytorch implementation of [Portrait Diffusion: Training-free Face Stylization wi
 
 
 
-[![arXiv](https://img.shields.io/badge/ArXiv-2304.08465-brightgreen)](https://arxiv.org/abs/2312.02212) 
+[![arXiv](https://img.shields.io/badge/ArXiv-2312.02212-brightgreen)](https://arxiv.org/abs/2312.02212) 
 [![demo](https://img.shields.io/badge/Demo-Hugging%20Face-brightgreen)](https://huggingface.co/spaces/Jinl/PortraitDiffusion)
 
 
