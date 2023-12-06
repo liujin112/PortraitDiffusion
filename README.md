@@ -78,7 +78,14 @@ For personalized model usage, you should place the full model to `models/Stable-
 ## Citation
 
 ```bibtex
-
+@misc{liu2023portrait,
+      title={Portrait Diffusion: Training-free Face Stylization with Chain-of-Painting}, 
+      author={Jin Liu and Huaibo Huang and Chao Jin and Ran He},
+      year={2023},
+      eprint={2312.02212},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
 ```
 
 
