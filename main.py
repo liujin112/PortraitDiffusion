@@ -7,7 +7,7 @@ import torch.nn.functional as F
 import argparse
 import numpy as np
 from tqdm import tqdm
-from diffusers import DDIMScheduler
+from diffusers import DDIMScheduler,LCMScheduler
 from torchvision.utils import save_image
 from torchvision.io import read_image
 from PIL import Image 
@@ -45,7 +45,7 @@ def load_mask(image_path, res, device):
 def main():
     args = argparse.ArgumentParser()
 
-    args.add_argument("--step", type=int, default=4)
+    args.add_argument("--step", type=int, default=0)
     args.add_argument("--layer", type=int, default=10)
     args.add_argument("--res", type=int, default=512)
     args.add_argument("--style_guidance", type=float, default=1.5)
@@ -55,6 +55,10 @@ def main():
     args.add_argument("--style_mask", type=str, default='')
     args.add_argument("--output", type=str, default='./results/')
     args.add_argument("--only_mask_region", action="store_true")
+    args.add_argument("--model_path", type=str, default='runwayml/stable-diffusion-v1-5')
+    args.add_argument("--SAC_step", type=int, default=35)
+    args.add_argument("--num_inference_steps", type=int, default=50)
+    args.add_argument("--LCM_lora", action="store_true")
 
     args = args.parse_args()
     STEP = args.step
@@ -62,16 +66,24 @@ def main():
     only_mask_region = args.only_mask_region
     out_dir = args.output
     style_guidance = args.style_guidance
-    #torch.cuda.set_device(1)  # set the GPU device
-    # inference the synthesized image with MasaCtrl
+    num_inference_steps = args.num_inference_steps
+    SAC_step = args.SAC_step
+    
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
     Guidance_scale = 0.0
 
     
-    model_path = "runwayml/stable-diffusion-v1-5"
-    scheduler = DDIMScheduler(beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear", clip_sample=False, set_alpha_to_one=False)
-    model = MasaCtrlPipeline.from_pretrained(model_path, scheduler=scheduler).to(device)
+    model_path = args.model_path
+    model = MasaCtrlPipeline.from_pretrained(model_path).to(device)
+    
+
+    if args.LCM_lora:
+        model.scheduler = LCMScheduler.from_config(model.scheduler.config)
+        # load LCM-LoRA
+        model.load_lora_weights("latent-consistency/lcm-lora-sdv1-5")
+    else:
+        model.scheduler = DDIMScheduler.from_config(model.scheduler.config)
 
     source_image = load_image(args.content, args.res, device)
     style_image = load_image(args.style, args.res, device)
@@ -91,14 +103,14 @@ def main():
             st_code, latents_list = model.invert(style_content,
                                                 source_prompt,
                                                 guidance_scale=Guidance_scale,
-                                                num_inference_steps=50,
+                                                num_inference_steps=num_inference_steps,
                                                 return_intermediates=True)
                                                     
             start_code = torch.cat([st_code, st_code[1:]], dim=0)
             assert start_code.shape[0] == 3
             
             editor = MaskPromptedStyleAttentionControl(STEP, LAYPER, 
-                                                     style_attn_step=35,
+                                                     style_attn_step=SAC_step,
                                                      style_guidance=style_guidance, 
                                                      style_mask=style_mask,
                                                      source_mask=source_mask,
@@ -111,10 +123,12 @@ def main():
             image_masactrl = model(prompts,
                                 latents=start_code,
                                 guidance_scale=Guidance_scale,
-                                ref_intermediate_latents=latents_list)
+                                ref_intermediate_latents=latents_list,
+                                num_inference_steps=num_inference_steps
+                                )
 
             os.makedirs(out_dir, exist_ok=True)
-            save_image(image_masactrl, os.path.join(out_dir, f"sample{len(os.listdir(out_dir))}_step{STEP}_layer{LAYPER}.png"), nrow=3)
+            save_image(image_masactrl, os.path.join(out_dir, f"sample{len(os.listdir(out_dir))}_SACstep{SAC_step}_SG{style_guidance}_Tstep{num_inference_steps}.png"), nrow=3)
             print("Syntheiszed images are saved in", out_dir)
 
 if __name__ == "__main__":

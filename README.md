@@ -45,21 +45,20 @@ Our method also can work on various personalized models, includeing Full finetun
 
 
 ### Inference
-A simple inference code is provided as following, one can give the corresponding masks for content image and style image for better results. And set `--only_mask_region` to stylize the masked region only. A good result may need multiple `Chain-of-Painting` steps with different mask prompts.
+A simple inference code is provided as following, one can give the corresponding masks for content image and style image for better results. And set `--only_mask_region` to stylize the masked region only. A good result may need multiple `Chain-of-Painting` steps with different mask prompts. You can try to reduce num_inference_steps to fewer steps, but you need to set SAC_step to (50%-70%) of the total number of steps (achieve a balance between content preservation and stylization between (50%-70%) of the total steps).
+
 
 ```bash
 export CUDA_VISIBLE_DEVICES=0
-python main.py --step 0 \
-              --layer 10 \
-              --style_guidance 1.2 \
+python main.py --style_guidance 1.2 \
+              --SAC_step 35 \
+              --num_inference_steps 50 \
               --content 'images/content/1.jpg' \
               --content_mask '' \
-              --style 'images/style/1.jpf' \
+              --style 'images/style/1.jpg' \
               --style_mask '' \
               --output './results' \
 ```
-
-
 
 ### Gradio Demo
 Gradio demo provides more controllable settings. We intergrate [SegmentAnything Model (SAM)](https://github.com/facebookresearch/segment-anything) for obtaining the masks directly.
